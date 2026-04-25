@@ -1,0 +1,23 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: Valentin Vorobyev
+    changes:
+    - createTable:
+        tableName: document_type
+        columns:
+        - column:
+            constraints:
+              primaryKey: true
+              primaryKeyName: document_type_id
+            name: document_type_id
+            type: VARCHAR
+        - column:
+            constraints:
+              nullable: false
+            name: tenant_id
+            type: VARCHAR
+
+    rollback:
+    - dropTable:
+        tableName: document_type

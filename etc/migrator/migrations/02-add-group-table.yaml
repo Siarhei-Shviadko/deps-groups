@@ -1,0 +1,103 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: Valentin Vorobyev
+    changes:
+    - createTable:
+        tableName: group
+        columns:
+        - column:
+            constraints:
+              primaryKey: true
+              primaryKeyName: group_id
+            name: group_id
+            type: VARCHAR
+        - column:
+            constraints:
+              nullable: false
+            name: tenant_id
+            type: VARCHAR
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR
+        - column:
+            constraints:
+              nullable: false
+            name: tags
+            type: JSONB
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: DATETIME
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: DATETIME
+        - column:
+            constraints:
+              nullable: false
+            name: is_deleted
+            type: BOOLEAN
+
+    rollback:
+    - dropTable:
+        tableName: group
+
+- changeSet:
+    id: 2
+    author: Valentin Vorobyev
+    changes:
+    - createTable:
+        tableName: group_document_types
+        columns:
+        - column:
+            name: group_id
+            type: VARCHAR
+            constraints:
+              primaryKey: true
+              primaryKeyName: group_document_types_pk
+        - column:
+            name: document_type_id
+            type: VARCHAR
+            constraints:
+              primaryKey: true
+              primaryKeyName: group_document_types_pk
+    rollback:
+    - dropTable:
+        tableName: group_document_types
+
+- changeSet:
+    id: 3
+    author: Valentin Vorobyev
+    changes:
+    - addForeignKeyConstraint:
+        baseTableName: group_document_types
+        baseColumnNames: group_id
+        referencedTableName: group
+        referencedColumnNames: group_id
+        constraintName: group_id_fk
+        onDelete: CASCADE
+    rollback:
+      - dropForeignKeyConstraint:
+          baseTableName: group_document_types
+          constraintName: group_id_fk
+
+- changeSet:
+    id: 4
+    author: Valentin Vorobyev
+    changes:
+    - addForeignKeyConstraint:
+        baseTableName: group_document_types
+        baseColumnNames: document_type_id
+        referencedTableName: document_type
+        referencedColumnNames: document_type_id
+        constraintName: document_type_id_fk
+        onDelete: CASCADE
+    rollback:
+      - dropForeignKeyConstraint:
+          baseTableName: group_document_types
+          constraintName: document_type_id_fk

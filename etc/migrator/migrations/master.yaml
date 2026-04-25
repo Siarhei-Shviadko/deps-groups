@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: ./migrations/01-add-document-type-table.yaml
+  - include:
+      file: ./migrations/02-add-group-table.yaml
+  - include:
+      file: ./migrations/03-remove-tags-column.yaml

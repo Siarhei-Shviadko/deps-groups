@@ -1,0 +1,87 @@
+@startuml Group Info Updating
+skinparam sequenceMessageAlign center
+
+participant GroupService as GS
+participant GroupRepository as GR
+participant Group as G
+
+note over GS
+update_info(
+    id: str, t_id: str, 
+    name: str, description: str | None
+): Group
+end note
+
+[o-> GS ++ : update_info
+
+== Checks ==
+
+note over GR
+has_group_with_name(
+    name: str, t_id: str
+): bool
+end note
+
+GS -> GR ++ : has_group_with_name
+
+opt has group with name == True
+
+    GR --> GS: True
+
+    [x<-- GS: raise error
+
+end
+
+return False
+
+== Group Retrieving ==
+
+note over GR
+group_of_id(
+    id: str, t_id: str
+): Group
+end note
+
+GS -> GR ++ : group_of_id
+
+opt group not found
+
+    GR -->x GS: GroupNotFound
+    [x<-- GS: raise error
+
+end
+
+return Group
+
+== Updating Info ==
+
+note over G
+update_info(
+    name: str, description: str | None
+): None
+end note
+
+GS -> G ++ : update_info
+deactivate
+
+== Saving ==
+
+note over GR
+save(group: Group): None
+end note
+
+GS -> GR ++ : save
+deactivate
+
+== Events Publishing ==
+
+note over GS
+publish_events(group: Group): None
+end note
+
+GS -> GS ++ : publish_events
+deactivate
+
+return Group
+
+@enduml

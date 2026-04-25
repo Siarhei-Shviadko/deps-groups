@@ -1,0 +1,58 @@
+@startuml Group Updating
+skinparam sequenceMessageAlign center
+
+participant GroupService as GS
+participant GroupRepository as GR
+participant Group as G
+
+note over GS
+delete(
+    ids: list[str], t_id: str
+): list[Group]
+end note
+
+[o-> GS ++ : delete
+
+== Groups Retrieving ==
+
+note over GR
+groups_of_ids(
+    ids: list[str], t_id: str
+): list[Group]
+end note
+
+GS -> GR ++ : groups_of_ids
+return list[Group]
+
+== Deleting ==
+
+loop for group in groups
+    note over G
+    delete(): None
+    end note
+
+    GS -> G ++ : delete
+    deactivate
+end
+
+note over GR
+delete_all(
+    ids: list[str], t_id: str
+): None
+end note
+
+GS -> GR ++ : delete_all
+deactivate
+
+== Events Publishing ==
+
+note over GS
+publish_events(group: Group): None
+end note
+
+GS -> GS ++ : publish_events
+deactivate
+
+return list[Group]
+
+@enduml

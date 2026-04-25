@@ -1,0 +1,65 @@
+@startuml Add Document Type
+skinparam sequenceMessageAlign center
+
+participant GroupService as GS
+participant GroupRepository as GR
+participant Group as G
+
+note over GS
+add_document_type(
+    id: str, t_id: str, dt_id: str
+): Group
+end note
+
+[o-> GS ++ : add_document_type
+
+== Group Retrieving ==
+
+note over GR
+group_of_id(
+    id: str, t_id: str
+): Group
+end note
+
+GS -> GR ++ : group_of_id
+
+opt group not found
+
+    GR -->x GS: GroupNotFound
+    [x<-- GS: raise error
+
+end
+
+return Group
+
+== Adding Document Type ==
+
+note over G
+add_document_type(
+    dt_id: str
+): None
+end note
+
+GS -> G ++ : add_document_type
+deactivate
+
+== Saving ==
+
+note over GR
+save(group: Group): None
+end note
+
+GS -> GR ++ : save
+deactivate
+
+== Events Publishing ==
+
+note over GS
+publish_events(group: Group): None
+end note
+
+GS -> GS ++ : publish_events
+deactivate
+
+return Group
+@enduml

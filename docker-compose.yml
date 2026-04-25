@@ -1,0 +1,16 @@
+version: "3.4"
+
+services:
+  api:
+    image: "groups-dev"
+    container_name: "deps-groups"
+    command: python -m deps_groups serve
+
+  consumer:
+    image: "groups-dev"
+    container_name: "deps-groups-consumer"
+    command: python -m deps_groups dispatch
+
+  migrator:
+    image: "groups-migrator"
+    container_name: "deps-groups-migrator"

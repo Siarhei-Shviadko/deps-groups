@@ -1,0 +1,18 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: Siarhei Shveadko
+    changes:
+    - dropColumn:
+        tableName: group
+        columnName: tags    
+    
+    rollback:
+    - addColumn:
+        tableName: group
+        columns:
+          - column:
+              constraints:
+                nullable: false
+              name: tags
+              type: JSONB

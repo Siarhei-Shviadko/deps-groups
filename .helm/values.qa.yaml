@@ -1,0 +1,33 @@
+groups:
+  image:
+    path: "/deps-platform/deps-groups"
+  resources: {}
+
+groups_settings:
+  ENV: qa
+
+  LOG_LEVEL: "INFO"
+
+  DATABASE_REQUIRE_SECURE_TRANSPORT: false
+
+migration_settings:
+  DATABASE_REQUIRE_SECURE_TRANSPORT: false
+
+groups_consumer:
+  image:
+    path: "/deps-platform/deps-groups"
+
+migrator:
+  image:
+    path: "/deps-platform/deps-groups-migrator"
+
+helm:
+  helm_logs_job_enabled: false
+
+csi:
+  vault_namespace: 'k8s-qa'
+  roleName: 'k8s-qa'
+  vaultKubernetesMountPath: 'kubernetes-qa'
+
+service_account:
+  serviceAccountName: 'deps-qa'

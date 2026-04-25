@@ -1,0 +1,27 @@
+from .document_type_added import *
+from .document_type_removed import *
+from .group import *
+from .group_created import *
+from .group_deleted import *
+from .group_factory import *
+from .group_filtering import *
+from .group_info import *
+from .group_info_updated import *
+from .group_sorting import *
+from .i_command_group_repository import *
+from .i_query_group_repository import *
+
+__all__ = (
+    group.__all__
+    + i_command_group_repository.__all__
+    + group_factory.__all__
+    + group_created.__all__
+    + group_info_updated.__all__
+    + group_deleted.__all__
+    + document_type_added.__all__
+    + document_type_removed.__all__
+    + group_info.__all__
+    + i_query_group_repository.__all__
+    + group_filtering.__all__
+    + group_sorting.__all__
+)

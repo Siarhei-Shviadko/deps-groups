@@ -1,0 +1,74 @@
+@startuml Group Creation
+skinparam sequenceMessageAlign center
+
+participant GroupService as GS
+participant GroupRepository as GR
+participant GroupFactory as GF
+
+note over GS
+create(
+    t_id: str, name: str, 
+    description: str | None
+): Group
+end note
+
+[o-> GS: create
+activate GS
+
+== Checks ==
+
+note over GR
+has_group_with_name(
+    name: str, t_id: str
+): bool
+end note
+
+GS -> GR: has_group_with_name
+activate GR
+
+opt has group with name == True
+
+    GR --> GS: True
+
+    [x<-- GS: raise error
+
+end
+
+return False
+
+== Group Creation ==
+
+note over GF
+create(
+    t_id: str, name: str, 
+    description: str | None
+): Group
+end note
+
+GS -> GF: create
+activate GF
+return Group
+deactivate GF
+
+== Saving ==
+
+note over GR
+save(group: Group): None
+end note
+
+GS -> GR: save
+activate GR
+deactivate GR
+
+== Events Publishing ==
+
+note over GS
+publish_events(group: Group): None
+end note
+
+GS -> GS ++ : publish_events
+deactivate
+
+return Group
+
+@enduml
