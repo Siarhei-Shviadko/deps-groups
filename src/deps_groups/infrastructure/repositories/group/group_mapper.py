@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any
+from typing import Any, Mapping
 
 from deps_groups.domain.model import Group
 
@@ -19,7 +19,7 @@ class GroupMapper:
         }
 
     @staticmethod
-    def from_dict(rows: list[dict[str, Any]]) -> Group:
+    def from_dict(rows: list[Mapping[str, Any]]) -> Group:
         group_data = rows[0]
         return Group(
             id_=group_data["group_id"],
@@ -34,7 +34,7 @@ class GroupMapper:
 
 class GroupsMapper:
     @staticmethod
-    def from_dict(rows: list[dict[str, Any]]) -> list[Group]:
+    def from_dict(rows: list[Mapping[str, Any]]) -> list[Group]:
         rows_mapping = defaultdict(list)
 
         for row in rows:

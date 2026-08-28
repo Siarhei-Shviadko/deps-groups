@@ -2,8 +2,8 @@ import logging
 from contextlib import contextmanager
 from typing import Generator
 
-from sqlalchemy import MetaData, create_engine
-from sqlalchemy.engine.url import URL
+from sqlalchemy import MetaData, create_engine, text
+from sqlalchemy.engine import URL
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from .constants import DBDialect, DBDriver
@@ -32,19 +32,18 @@ class DatabaseSession:  # noqa: WPS230
         sslmode: str = "verify-full",
         pool_size: int = 10,
     ) -> None:
-        engine_url = URL(
+        engine_url = URL.create(
             drivername=f"{dialect.value}+{driver.value}",
             username=username,
             password=password,
             host=host,
             port=port,
             database=database,
-            query=metaflags if metaflags is not None else {},
+            query=metaflags if isinstance(metaflags, dict) else {},
         )
 
         self.engine = create_engine(
             engine_url,
-            convert_unicode=True,
             pool_size=pool_size,
             connect_args={
                 "sslcert": sslcert,
@@ -57,7 +56,7 @@ class DatabaseSession:  # noqa: WPS230
             execution_options={"isolation_level": "REPEATABLE READ"},
         )
 
-        self.session_factory = scoped_session(sessionmaker(bind=self.engine))
+        self.session_factory = scoped_session(sessionmaker(self.engine))
 
         self._logger = logging.getLogger(self.__class__.__name__)
 
@@ -83,4 +82,4 @@ class DatabaseSession:  # noqa: WPS230
 
     def healthcheck(self):
         with self.connection() as conn:
-            conn.execute("select 1;")
+            conn.execute(text("select 1;"))
