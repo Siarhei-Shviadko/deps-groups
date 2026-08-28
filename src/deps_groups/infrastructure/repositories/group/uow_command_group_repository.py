@@ -35,7 +35,7 @@ class UoWCommandGroupRepository(ICommandGroupRepository):  # noqa: WPS214
 
     def group_of_id(self, group_id: str, tenant_id: str) -> Group | None:
         query = (
-            select(self.group_table)
+            select(*self.group_table)
             .select_from(self.joined_tables)
             .where(
                 and_(
@@ -46,16 +46,16 @@ class UoWCommandGroupRepository(ICommandGroupRepository):  # noqa: WPS214
             )
         )
 
-        rows = self._connection.execute(query)
+        rows = self._connection.execute(query).mappings().all()
 
-        if rows.rowcount < 1:
+        if not rows:
             return None
 
-        return GroupMapper.from_dict(rows.fetchall())
+        return GroupMapper.from_dict(rows)
 
     def groups_of_ids(self, groups_ids: list[str], tenant_id: str) -> list[Group]:
         query = (
-            select(self.group_table)
+            select(*self.group_table)
             .select_from(self.joined_tables)
             .where(
                 and_(
@@ -67,16 +67,14 @@ class UoWCommandGroupRepository(ICommandGroupRepository):  # noqa: WPS214
             .order_by(group_table.c.created_at)
         )
 
-        rows = self._connection.execute(query).fetchall()
-
-        return GroupsMapper.from_dict(rows)
+        return GroupsMapper.from_dict(self._connection.execute(query).mappings().all())
 
     def save(self, group: Group) -> None:
         self._save_group(group)
         self._save_document_types(group)
 
     def has_group_with_name(self, name: str, tenant_id: str) -> bool:
-        query = select([group_table.c.group_id]).where(
+        query = select(group_table.c.group_id).where(
             and_(
                 group_table.c.name == name,
                 group_table.c.tenant_id == tenant_id,

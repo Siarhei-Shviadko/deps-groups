@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Mapping
 
 from deps_groups.domain.model import DocumentType
 
@@ -14,7 +14,7 @@ class DocumentTypeMapper:
         }
 
     @staticmethod
-    def from_dict(document_type: dict[str, Any]) -> DocumentType:
+    def from_dict(document_type: Mapping[str, Any]) -> DocumentType:
         return DocumentType(
             id_=document_type["document_type_id"],
             tenant_id=document_type["tenant_id"],

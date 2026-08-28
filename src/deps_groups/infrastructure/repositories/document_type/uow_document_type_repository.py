@@ -22,22 +22,22 @@ class UoWDocumentTypeRepository(IDocumentTypeRepository):
         ]
 
     def document_type_of_id(self, document_type_id: str, tenant_id: str) -> DocumentType | None:
-        query = select(self.document_type_columns).where(
+        query = select(*self.document_type_columns).where(
             and_(
                 document_type_table.c.document_type_id == document_type_id,
                 document_type_table.c.tenant_id == tenant_id,
             ),
         )
 
-        rows = self._connection.execute(query)
+        row = self._connection.execute(query).mappings().first()
 
-        if rows.rowcount < 1:
+        if row is None:
             return None
 
-        return DocumentTypeMapper.from_dict(rows.first())
+        return DocumentTypeMapper.from_dict(row)
 
     def document_types_of_invalid_ids(self, document_type_ids: list[str], tenant_id: str) -> list[str]:
-        query = select([document_type_table.c.document_type_id]).where(
+        query = select(document_type_table.c.document_type_id).where(
             and_(
                 document_type_table.c.document_type_id.in_(document_type_ids),
                 document_type_table.c.tenant_id == tenant_id,
